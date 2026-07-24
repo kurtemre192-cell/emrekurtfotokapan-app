@@ -4,3 +4,4 @@ torch
 Pillow
 numpy
 soundfile
+librosa
