@@ -3,3 +3,4 @@ PytorchWildlife
 torch
 Pillow
 numpy
+soundfile
