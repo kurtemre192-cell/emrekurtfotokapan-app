@@ -1,0 +1,5 @@
+streamlit
+PytorchWildlife
+torch
+Pillow
+numpy
