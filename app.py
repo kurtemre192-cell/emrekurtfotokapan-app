@@ -1,6 +1,8 @@
 import streamlit as st
 import torch
 from PytorchWildlife.models import detection as pw_detection
+from PIL import Image
+import numpy as np
 
 st.set_page_config(page_title="Fotokapan Analiz", page_icon="🐾")
 
@@ -14,6 +16,28 @@ def load_model():
 try:
     detector = load_model()
     st.success("✅ MegaDetectorV6 başarıyla kuruldu ve sistem analize hazır!")
-    st.file_uploader("Çalıştığını görmek için bir fotoğraf seçin", type=['png', 'jpg', 'jpeg'])
+    
+    # Fotoğraf yükleme alanı
+    uploaded_file = st.file_uploader("Çalıştığını görmek için bir fotoğraf seçin", type=['png', 'jpg', 'jpeg'])
+
+    if uploaded_file is not None:
+        # Yüklenen fotoğrafı aç ve ekranda göster
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Yüklenen Fotoğraf", use_column_width=True)
+        
+        # Analizi başlatacak buton
+        if st.button("Fotoğrafı Analiz Et"):
+            with st.spinner("Yapay zeka fotoğrafı inceliyor, lütfen bekleyin..."):
+                # Görüntüyü modelin anlayacağı formata (Numpy RGB) çevir
+                img_array = np.array(image.convert("RGB"))
+                
+                # PytorchWildlife modeli ile analizi yap
+                sonuclar = detector.single_image_detection(img_array)
+                
+                st.success("Analiz başarıyla tamamlandı!")
+                
+                # Sonuç çıktılarını ekrana yazdır
+                st.write(sonuclar)
+                
 except Exception as e:
-    st.error(f"Kurulum sırasında bir hata oluştu: {e}")
+    st.error(f"Kurulum veya analiz sırasında bir hata oluştu: {e}")
